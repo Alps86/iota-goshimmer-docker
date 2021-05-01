@@ -27,7 +27,7 @@ services:
   goshimmer:
     image: iotaledger/goshimmer:v0.5.7
     restart: always
-    stop_grace_period: 1m
+    stop_grace_period: 2m
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.dashboard.loadbalancer.server.port=80"
@@ -60,7 +60,7 @@ services:
         --skip-config=true
         --autopeering.entryNodes=2PV5487xMw5rasGBXXWeqSi4hLz7r19YBt8Y1TGAsQbj@ressims.iota.cafe:15626,5EDH4uY78EA6wrBkHHAVBWBMDt7EcksRq6pjzipoW15B@entryshimmer.tanglebay.com:14646
         --node.disablePlugins=
-        --node.enablePlugins=remotelog,networkdelay,spammer,prometheus
+        --node.enablePlugins=remotelog,networkdelay,spammer,prometheus,syncbeacon
         --logger.level=info
         --logger.disableEvents=false
         --logger.remotelog.serverAddress=ressims.iota.cafe:5213
