@@ -3,26 +3,26 @@ This setup only works with a correct domain.
 
 ## install docker
 ```console
-curl -LO https://raw.githubusercontent.com/Alps86/iota-hornet-docker/master/setup.sh
+curl -LO https://raw.githubusercontent.com/Alps86/iota-goshimmer-docker/master/setup.sh
 chmod +x setup.sh
 ./setup.sh
 ```
 
 ### change the config
 ```console
-cd /opt/hornet
+cd /opt/goshimmer
 docker-compose run pwdhash
 ./config.sh
 ```
 
 ## start node
 ```console
-service hornet start
+service goshimmer start
 ```
 
 ## stop node
 ```console
-service hornet stop
+service goshimmer stop
 ```
 
 ## visit the dashboard
