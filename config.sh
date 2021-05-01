@@ -4,8 +4,8 @@ read -p "EMAIL: " email
 read -p "DOMAIN: " domain
 
 echo "EMAIL=$email
-DOMAIN=$domain" > /etc/default/hornet
+DOMAIN=$domain" > /etc/default/goshimmer
 
-cp hornet.service /etc/systemd/system/hornet.service && rm hornet.service
-systemctl enable hornet.service
+cp goshimmer.service /etc/systemd/system/goshimmer.service && rm goshimmer.service
+systemctl enable goshimmer.service
 systemctl daemon-reload
