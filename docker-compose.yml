@@ -1,0 +1,77 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: "traefik:v2.4"
+    container_name: "traefik"
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls.certresolver=https"
+      - "--entrypoints.websecure.http.tls.domains.main={DOMAIN}"
+      - "--certificatesresolvers.https.acme.email=${EMAIL}"
+      - "--certificatesresolvers.https.acme.httpchallenge=true"
+      - "--certificatesresolvers.https.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.https.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  hornet:
+    image: iotaledger/goshimmer:v0.5.7
+    restart: always
+    working_dir: "/app"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.dashboard.loadbalancer.server.port=80"
+      - "traefik.http.routers.dashboard.rule=Host(`${DOMAIN}`) && PathPrefix(`/`)"
+      - "traefik.http.routers.dashboard.service=dashboard"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=https"
+    ports:
+      - "0.0.0.0:14626:14626/udp"
+      - "0.0.0.0:14666:14666/tcp"
+      - "0.0.0.0:15600:15600/tcp"
+      - "0.0.0.0:10895:10895/tcp"
+      - "0.0.0.0:6061:6061/tcp"
+    expose:
+      - "80"
+      - "14265"
+    environment:
+      RESTAPI_BINDADDRESS: "0.0.0.0:14265"
+      DASHBOARD_BINDADDRESS: "0.0.0.0:80"
+      PRUNING_DELAY: 60480
+      ANALYSIS_CLIENT_SERVERADDRESS: ressims.iota.cafe:21888
+      AUTOPEERING_PORT: 14626
+      GOSSIP_PORT: 14666
+      WEBAPI_BINDADDRESS: 0.0.0.0:8080
+      PROFILING_BINDADDRESS: 0.0.0.0:6061
+      NETWORKDELAY_ORIGINPUBLICKEY: 9DB3j9cWYSuEEtkvanrzqkzCQMdH1FGv3TawJdVbDxkd
+      FPC_BINDADDRESS: 0.0.0.0:10895
+      PROMETHEUS_BINDADDRESS: 0.0.0.0:9311
+      command: >
+        --skip-config=true
+        --autopeering.entryNodes=2PV5487xMw5rasGBXXWeqSi4hLz7r19YBt8Y1TGAsQbj@ressims.iota.cafe:15626,5EDH4uY78EA6wrBkHHAVBWBMDt7EcksRq6pjzipoW15B@entryshimmer.tanglebay.com:14646
+        --node.disablePlugins=
+        --node.enablePlugins=remotelog,networkdelay,spammer,prometheus
+        --logger.level=info
+        --logger.disableEvents=false
+        --logger.remotelog.serverAddress=ressims.iota.cafe:5213
+        --drng.pollen.instanceId=1
+        --drng.pollen.threshold=3
+        --drng.pollen.committeeMembers=AheLpbhRs1XZsRF8t8VBwuyQh9mqPHXQvthV5rsHytDG,FZ28bSTidszUBn8TTCAT9X1nVMwFNnoYBmZ1xfafez2z,GT3UxryW4rA9RN9ojnMGmZgE2wP7psagQxgVdA4B9L1P,4pB5boPvvk2o5MbMySDhqsmC2CtUdXyotPPEpb7YQPD7,64wCsTZpmKjRVHtBKXiFojw7uw3GszumfvC4kHdWsHga
+        --drng.xteam.instanceId=1339
+        --drng.xteam.threshold=4
+        --drng.xteam.committeeMembers=GUdTwLDb6t6vZ7X5XzEnjFNDEVPteU7tVQ9nzKLfPjdo,68vNzBFE9HpmWLb2x4599AUUQNuimuhwn3XahTZZYUHt,Dc9n3JxYecaX3gpxVnWb4jS3KVz1K1SgSK1KpV1dzqT1,75g6r4tqGZhrgpDYZyZxVje1Qo54ezFYkCw94ELTLhPs,CN1XLXLHT9hv7fy3qNhpgNMD6uoHFkHtaNNKyNVCKybf,7SmttyqrKMkLo5NPYaiFoHs8LE6s7oCoWCQaZhui8m16,CypSmrHpTe3WQmCw54KP91F5gTmrQEL7EmTX38YStFXx
+    cap_drop:
+      - ALL
+    volumes:
+      - "./db:/tmp/mainnetdb:rw"
+      - "/etc/localtime:/etc/localtime:ro"

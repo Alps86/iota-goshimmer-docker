@@ -1,0 +1,6 @@
+.idea
+config.json
+peering.json
+snapshots
+mainnetdb
+letsencrypt
