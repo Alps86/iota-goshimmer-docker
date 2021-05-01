@@ -24,10 +24,11 @@ services:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-  hornet:
+  goshimmer:
     image: iotaledger/goshimmer:v0.5.7
     restart: always
     working_dir: "/app"
+    stop_grace_period: 1m
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.dashboard.loadbalancer.server.port=80"

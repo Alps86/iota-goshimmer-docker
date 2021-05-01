@@ -23,6 +23,9 @@ docker-compose -v
 mkdir -p /opt/goshimmer
 cd /opt/goshimmer
 
+mkdir db
+chmod 0777 db
+
 # setup service
 curl -LO https://raw.githubusercontent.com/Alps86/iota-goshimmer-docker/master/goshimmer.service
 curl -LO https://raw.githubusercontent.com/Alps86/iota-goshimmer-docker/master/config.sh
