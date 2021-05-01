@@ -11,7 +11,6 @@ chmod +x setup.sh
 ### change the config
 ```console
 cd /opt/goshimmer
-docker-compose run pwdhash
 ./config.sh
 ```
 
