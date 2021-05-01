@@ -27,7 +27,6 @@ services:
   goshimmer:
     image: iotaledger/goshimmer:v0.5.7
     restart: always
-    working_dir: "/app"
     stop_grace_period: 1m
     labels:
       - "traefik.enable=true"
