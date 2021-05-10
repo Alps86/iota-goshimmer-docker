@@ -25,7 +25,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   goshimmer:
-    image: iotaledger/goshimmer:v0.5.7
+    image: iotaledger/goshimmer:v0.5.8
     restart: always
     stop_grace_period: 2m
     labels:
